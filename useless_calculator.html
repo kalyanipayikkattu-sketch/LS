@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #202020;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Windows Frame Container */
+        .window {
+            width: 320px;
+            height: 500px;
+            background-color: #202020;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid #333333;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Windows Title Bar */
+        .title-bar {
+            height: 32px;
+            background-color: #202020;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 12px;
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        .title-bar .controls {
+            display: flex;
+            height: 100%;
+        }
+
+        .title-bar .control-btn {
+            width: 46px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .title-bar .control-btn:hover {
+            background-color: #2d2d2d;
+        }
+
+        .title-bar .control-btn.close:hover {
+            background-color: #e81123;
+        }
+
+        /* Calculator Display Area */
+        .display-container {
+            padding: 10px 16px 5px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-end;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        #history {
+            color: #a6a6a6;
+            font-size: 0.8rem;
+            min-height: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            text-align: right;
+        }
+
+        #display {
+            width: 100%;
+            background: transparent;
+            color: #ffffff;
+            text-align: right;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border: none;
+            outline: none;
+            white-space: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        #display::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Keypad Grid Layout */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            padding: 4px;
+            background-color: #202020;
+        }
+
+        button {
+            height: 52px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background-color: #2d2d2d;
+            color: #ffffff;
+            transition: background 0.1s;
+        }
+
+        button:hover {
+            background-color: #3b3b3b;
+        }
+
+        button:active {
+            background-color: #323232;
+        }
+
+        button.operator {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+
+        button.number {
+            background-color: #3b3b3b;
+            font-weight: 600;
+        }
+
+        button.number:hover {
+            background-color: #454545;
+        }
+
+        button.equals {
+            background-color: #4cc2ff;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        button.equals:hover {
+            background-color: #70ceff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Windows App Window Frame -->
+    <div class="window">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <span>Calculator</span>
+            <div class="controls">
+                <div class="control-btn">&#8722;</div>
+                <div class="control-btn">&#9633;</div>
+                <div class="control-btn close" onclick="closeWindow()">&#10005;</div>
+            </div>
+        </div>
+
+        <!-- Display Section -->
+        <div class="display-container">
+            <div id="history"></div>
+            <input type="text" id="display" readonly value="0">
+        </div>
+
+        <!-- Desktop Keypad -->
+        <div class="buttons">
+            <button onclick="appendValue('%')">%</button>
+            <button onclick="clearDisplay()">CE</button>
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">&#9003;</button>
+
+            <button onclick="appendValue('1/')">1/x</button>
+            <button onclick="appendValue('^2')">x²</button>
+            <button onclick="appendValue('√')">&radic;x</button>
+            <button onclick="appendValue('/')" class="operator">&#247;</button>
+
+            <button onclick="appendValue('7')" class="number">7</button>
+            <button onclick="appendValue('8')" class="number">8</button>
+            <button onclick="appendValue('9')" class="number">9</button>
+            <button onclick="appendValue('*')" class="operator">&times;</button>
+
+            <button onclick="appendValue('4')" class="number">4</button>
+            <button onclick="appendValue('5')" class="number">5</button>
+            <button onclick="appendValue('6')" class="number">6</button>
+            <button onclick="appendValue('-')" class="operator">&minus;</button>
+
+            <button onclick="appendValue('1')" class="number">1</button>
+            <button onclick="appendValue('2')" class="number">2</button>
+            <button onclick="appendValue('3')" class="number">3</button>
+            <button onclick="appendValue('+')" class="operator">+</button>
+
+            <button onclick="appendValue('+/-')">+/&minus;</button>
+            <button onclick="appendValue('0')" class="number">0</button>
+            <button onclick="appendValue('.')">.</button>
+            <button onclick="calculateResult()" class="equals">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        const history = document.getElementById('history');
+        let currentInput = '';
+
+        // Added your requested outputs + extra funny ones!
+        const funnyAnswers = [
+            "Ask your mom",
+            "Ask your dad",
+            "You are an idiot",
+            "Go and study bro..",
+            "42",
+            "Blue Screen of Death",
+            "Updating Windows... (99%)",
+            "Error 404: Math Not Found",
+            "7... roughly",
+            "Ask Cortana",
+            "Out of RAM",
+            "Result: 12 (Trust me bro)",
+            "Result: Pineapples 🍍",
+            "Too hard, try 1+1",
+            "Nice try, Bill Gates",
+            "-0.0000001",
+            "Calculator process crashed",
+            "Over 9000!",
+            "100% chance of rain",
+            "Syntax Error (Just kidding)",
+            "Keyboard not detected, press F1",
+            "Are you fr right now?",
+            "Bro really needs a calculator for this?",
+            "Google it yourself"
+        ];
+
+        function adjustFontSize() {
+            const length = display.value.length;
+            if (length > 25) {
+                display.style.fontSize = "0.9rem";
+            } else if (length > 15) {
+                display.style.fontSize = "1.1rem";
+            } else {
+                display.style.fontSize = "1.5rem";
+            }
+        }
+
+        function appendValue(value) {
+            if (display.value === '0' || isNaN(display.value) && display.value !== '0') {
+                currentInput = value;
+            } else {
+                currentInput += value;
+            }
+            display.value = currentInput;
+            adjustFontSize();
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            display.value = '0';
+            history.innerText = '';
+            adjustFontSize();
+        }
+
+        function deleteLast() {
+            currentInput = currentInput.slice(0, -1);
+            display.value = currentInput || '0';
+            adjustFontSize();
+        }
+
+        function calculateResult() {
+            if (currentInput === '') return;
+
+            history.innerText = currentInput + ' =';
+            const randomWrongResult = funnyAnswers[Math.floor(Math.random() * funnyAnswers.length)];
+            
+            display.value = randomWrongResult;
+            currentInput = '';
+            adjustFontSize();
+        }
+
+        function closeWindow() {
+            alert("This window is as stubborn as a real Windows update. It won't close!");
+        }
+    </script>
+</body>
+</html>
